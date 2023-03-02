@@ -33,8 +33,7 @@ RUN mkdir -p /tmp/bitnami/pkg/cache/ && cd /tmp/bitnami/pkg/cache/ && \
       tar -zxf "${COMPONENT}.tar.gz" -C /opt/bitnami --strip-components=2 --no-same-owner --wildcards '*/files' && \
       rm -rf "${COMPONENT}".tar.gz{,.sha256} ; \
     done
-RUN apt-get autoremove --purge -y curl && \
-    apt-get update && apt-get upgrade -y && \
+RUN apt-get update && apt-get upgrade -y && \
     apt-get clean && rm -rf /var/lib/apt/lists /var/cache/apt/archives
 RUN chmod g+rwX /opt/bitnami
 RUN chown -R 1001:1001 /opt/bitnami/oauth2-proxy
@@ -48,4 +47,5 @@ EXPOSE 4180 8080
 WORKDIR /opt/bitnami/oauth2-proxy
 USER 1001
 ENTRYPOINT [ "oauth2-proxy" ]
+HEALTHCHECK CMD curl -f http://localhost:4180/ping
 CMD [ "--upstream=http://0.0.0.0:8080/", "--http-address=0.0.0.0:4180" ]
